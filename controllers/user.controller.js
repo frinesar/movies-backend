@@ -48,3 +48,16 @@ exports.logout = async (res, req) => {
   res.clearCookie("refreshToken");
   res.sendStatus(200);
 };
+
+exports.refresh = async (res, req, next) => {
+  const { refreshToken } = req.cookies;
+  try {
+    if (!refreshToken) {
+      return next(ApiError.Unauthorized("No logged-in user"));
+    }
+    const accessToken = await UserService.refresh(refreshToken);
+    res.status(200).json({ accessToken });
+  } catch (error) {
+    next(error);
+  }
+};
