@@ -17,10 +17,9 @@ app.use(
 );
 app.use(cookieParser());
 app.use(express.json());
-app.use(tokenValidator);
 app.use("/api/users", userRouter);
-app.use("/api/wishlist", wishlistMoviesRouter);
-app.use("/api/watchedMoviesList", watchedMoviesListRouter);
+app.use("/api/wishlist", tokenValidator, wishlistMoviesRouter);
+app.use("/api/watchedMoviesList", tokenValidator, watchedMoviesListRouter);
 
 app.use("/test", (req, res) => {
   res.status(200).json({ message: "Working" });

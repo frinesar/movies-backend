@@ -24,3 +24,27 @@ exports.getAllUsers = async (req, res) => {
     })
   );
 };
+
+exports.loginUser = async (req, res, next) => {
+  const { username, password } = req.body;
+  try {
+    const user = await UserService.loginUser(username, password);
+    const payload = { ...new UserDto(user) };
+    const { accessToken, refreshToken } = TokenService.createTokens(payload);
+    await TokenService.saveRefreshToken(payload.id, refreshToken);
+    res.cookie("refreshToken", refreshToken, {
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    });
+    res.status(200).json({ accessToken });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.logout = async (res, req) => {
+  const { refreshToken } = req.cookies;
+  await TokenService.deleteRefreshToken(refreshToken);
+  res.clearCookie("refreshToken");
+  res.sendStatus(200);
+};

@@ -30,8 +30,8 @@ exports.validateRefreshToken = (refreshToken) => {
   }
 };
 
-exports.saveRefreshToken = async (user, refreshToken) => {
-  const token = await Token.create({ user: user.id, refreshToken });
+exports.saveRefreshToken = async (userID, refreshToken) => {
+  const token = await Token.create({ user: userID, refreshToken });
   return token;
 };
 
