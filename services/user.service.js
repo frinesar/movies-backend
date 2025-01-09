@@ -29,7 +29,6 @@ exports.getUser = async (id) => {
 
 exports.deleteUser = async (id) => {
   const user = await User.findOneAndDelete({ _id: id });
-  await TokenService.deleteManyRefreshTokens(id);
   if (!user) {
     throw ApiError.BadRequest("No such user");
   }

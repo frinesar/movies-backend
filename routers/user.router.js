@@ -1,12 +1,13 @@
 const { Router } = require("express");
 const UserController = require("../controllers/user.controller");
+const tokenValidator = require("../middleware/token-validator");
 
 const router = new Router();
 
-router.get("/", UserController.getAllUsers);
 router.post("/", UserController.createUser);
 router.post("/login", UserController.loginUser);
 router.post("/logout", UserController.logout);
-router.post("/refresh", UserController.refresh);
+router.get("/refresh", UserController.refresh);
+router.delete("/", tokenValidator, UserController.deleteUser);
 
 module.exports = router;

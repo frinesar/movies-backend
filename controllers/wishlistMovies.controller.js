@@ -39,8 +39,8 @@ exports.changeStatus = async (req, res, next) => {
   const userID = req.userID;
   const { movieID } = req.body;
   try {
-    await WishlistMovies.changeMovieStatus(userID, movieID);
-    res.sendStatus(201);
+    const response = await WishlistMovies.changeMovieStatus(userID, movieID);
+    res.status(201).json(response);
   } catch (error) {
     next(error);
   }

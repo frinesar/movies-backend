@@ -16,13 +16,20 @@ exports.createUser = async (req, res, next) => {
   }
 };
 
-exports.getAllUsers = async (req, res) => {
-  const users = await UserService.getAllUsers();
-  res.status(200).json(
-    users.map((user) => {
-      return { ...new UserDto(user) };
-    })
-  );
+exports.deleteUser = async (req, res, next) => {
+  const { id } = req.body;
+  try {
+    if (req.userID !== id) {
+      throw ApiError.Forbidden("No privileges to delete this user");
+    }
+    const user = await UserService.deleteUser(req.userID);
+    await WishlistService.deleteWishlist(req.userID);
+    await WatchedMoviesListService.deleteWatchedList(req.userID);
+    await TokenService.deleteManyRefreshTokens(req.userID);
+    res.sendStatus(200);
+  } catch (error) {
+    next(error);
+  }
 };
 
 exports.loginUser = async (req, res, next) => {
@@ -49,7 +56,7 @@ exports.logout = async (res, req) => {
   res.sendStatus(200);
 };
 
-exports.refresh = async (res, req, next) => {
+exports.refresh = async (req, res, next) => {
   const { refreshToken } = req.cookies;
   try {
     if (!refreshToken) {

@@ -24,11 +24,16 @@ exports.deleteFromWishlist = async (userID, movieID) => {
 
 exports.changeMovieStatus = async (userID, movieID) => {
   const movieToChange = await WishlistMovies.findOne({ user: userID, movieID });
-  return await WishlistMovies.updateOne(
+  return await WishlistMovies.findOneAndUpdate(
     {
       user: userID,
       movieID,
     },
-    { isWatched: !movieToChange.isWatched }
+    { isWatched: !movieToChange.isWatched },
+    { new: true, lean: true }
   );
+};
+
+exports.deleteWishlist = async (userID) => {
+  return await WishlistMovies.deleteMany({ user: userID });
 };

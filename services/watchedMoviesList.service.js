@@ -20,3 +20,7 @@ exports.deleteFromWatchedlist = async (userID, movieID) => {
     movieID,
   });
 };
+
+exports.deleteWatchedList = async (userID) => {
+  return await WatchedMoviesList.deleteMany({ user: userID });
+};
