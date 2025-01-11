@@ -15,3 +15,9 @@ exports.findMovie = async (query) => {
     )
   ).json();
 };
+
+exports.getCredits = async (movieID) => {
+  return (
+    await fetch(`${TMDB_URL}/movie/${movieID}/credits?api_key=${TMDB_API}`)
+  ).json();
+};

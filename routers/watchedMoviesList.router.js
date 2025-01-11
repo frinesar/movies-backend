@@ -4,7 +4,10 @@ const WatchedMoviesListController = require("../controllers/watchedMoviesList.co
 const router = new Router();
 
 router.get("/", WatchedMoviesListController.getWatchedMoviesList);
-router.post("/", WatchedMoviesListController.addToWatchedMoviesList);
-router.delete("/", WatchedMoviesListController.deleteFromWatchedMoviesList);
+router.post("/:movieID", WatchedMoviesListController.addToWatchedMoviesList);
+router.delete(
+  "/:movieID",
+  WatchedMoviesListController.deleteFromWatchedMoviesList
+);
 
 module.exports = router;

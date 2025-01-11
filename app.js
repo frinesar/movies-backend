@@ -19,6 +19,9 @@ app.use(
 
 app.use(express.json());
 app.use(cookieParser());
+// app.use((req, res, next) => {
+//   setTimeout(next, 1000);
+// });
 app.use("/api/users", userRouter);
 app.use("/api/wishlist", tokenValidator, wishlistMoviesRouter);
 app.use("/api/watchedMoviesList", tokenValidator, watchedMoviesListRouter);

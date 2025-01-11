@@ -5,5 +5,7 @@ const router = new Router();
 
 router.get("/search/:query", TMDBapi.findMovie);
 router.get("/:movieID", TMDBapi.getMovieByID);
+router.get("/credits/:movieID", TMDBapi.getCredits);
+router.get("/cast/:movieID", TMDBapi.getCast);
 
 module.exports = router;

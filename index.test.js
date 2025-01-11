@@ -40,7 +40,7 @@ describe("User + auth + wishlist", () => {
     accessToken = await response.body.accessToken;
   });
 
-  test("Get user wishlist", async () => {
+  test("Get user's wishlist", async () => {
     const response = await request(app)
       .get(`/api/wishlist`)
       .set("Authorization", `Bearer ${accessToken}`);
@@ -50,40 +50,57 @@ describe("User + auth + wishlist", () => {
 
   test("Add to wishlist", async () => {
     const response = await request(app)
-      .post(`/api/wishlist`)
-      .set("Authorization", `Bearer ${accessToken}`)
-      .send({
-        movieID: 550,
-      });
+      .post(`/api/wishlist/550`)
+      .set("Authorization", `Bearer ${accessToken}`);
+
     expect(response.statusCode).toBe(201);
     expect(response.body).toHaveProperty("movieID");
   });
 
   test("Change status in wishlist", async () => {
     const response = await request(app)
-      .put(`/api/wishlist`)
-      .set("Authorization", `Bearer ${accessToken}`)
-      .send({
-        movieID: 550,
-      });
+      .put(`/api/wishlist/550`)
+      .set("Authorization", `Bearer ${accessToken}`);
+
     expect(response.statusCode).toBe(201);
     expect(response.body).toHaveProperty("isWatched", true);
   });
 
   test("Delete from wishlist without token", async () => {
-    const response = await request(app)
-      .delete(`/api/wishlist/`)
-      .send({ movieID: 550 });
+    const response = await request(app).delete(`/api/wishlist/550`);
     expect(response.statusCode).toBe(401);
   });
 
   test("Delete from wishlist", async () => {
     const response = await request(app)
-      .delete(`/api/wishlist`)
-      .set("Authorization", `Bearer ${accessToken}`)
-      .send({
-        movieID: 550,
-      });
+      .delete(`/api/wishlist/550`)
+      .set("Authorization", `Bearer ${accessToken}`);
+
+    expect(response.statusCode).toBe(201);
+  });
+
+  test("Get user's watched list", async () => {
+    const response = await request(app)
+      .get(`/api/watchedMoviesList`)
+      .set("Authorization", `Bearer ${accessToken}`);
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toStrictEqual([]);
+  });
+
+  test("Add to watched list", async () => {
+    const response = await request(app)
+      .post(`/api/watchedMoviesList/550`)
+      .set("Authorization", `Bearer ${accessToken}`);
+
+    expect(response.statusCode).toBe(201);
+    expect(response.body).toHaveProperty("movieID");
+  });
+
+  test("Delete from watched list", async () => {
+    const response = await request(app)
+      .delete(`/api/watchedMoviesList/550`)
+      .set("Authorization", `Bearer ${accessToken}`);
+
     expect(response.statusCode).toBe(201);
   });
 
