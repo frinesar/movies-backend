@@ -1,6 +1,8 @@
 const ApiError = require("../exceptions/api.error");
 const ReviewService = require("../services/review.service");
 const TMDBservice = require("../services/TMDB.service");
+const ReviewDto = require("../dto/review.dto");
+const UserDto = require("../dto/user.dto");
 
 exports.getAllReviews = async (req, res, next) => {
   try {
@@ -8,14 +10,23 @@ exports.getAllReviews = async (req, res, next) => {
     const reviewsMovies = await Promise.all(
       reviews.map(async (review) => {
         const info = await TMDBservice.getMovie(review.movieID);
-        return {
-          id: review._id,
-          movieID: review.movieID,
-          movieTitle: info.title,
-          text: review.text,
-          updatedAt: review.updatedAt,
-          personalRating: review.personalRating,
-        };
+        return new ReviewDto({ movieTitle: info.title, ...review.toObject() });
+      })
+    );
+    res.status(200).json(reviewsMovies);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getUsersReviews = async (req, res, next) => {
+  const { userID } = req.userID;
+  try {
+    const reviews = await ReviewService.getUsersReviews(userID);
+    const reviewsMovies = await Promise.all(
+      reviews.map(async (review) => {
+        const info = await TMDBservice.getMovie(review.movieID);
+        return new ReviewDto({ movieTitle: info.title, ...review.toObject() });
       })
     );
     res.status(200).json(reviewsMovies);
@@ -33,7 +44,25 @@ exports.createReview = async (req, res, next) => {
       personalRating,
       movieID,
     });
-    res.status(201).json({ movieID, addedAt: newReview.createdAt });
+    res
+      .status(201)
+      .json({ ...new ReviewDto({ movieID, ...newReview.toObject() }) });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getReviewsForMovie = async (req, res, next) => {
+  const { movieID } = req.params;
+  try {
+    const reviews = await ReviewService.getReviewsForMovie(movieID);
+    const reviewsMovies = await Promise.all(
+      reviews.map(async (review) => {
+        const info = await TMDBservice.getMovie(review.movieID);
+        return new ReviewDto({ movieTitle: info.title, ...review.toObject() });
+      })
+    );
+    res.status(200).json(reviewsMovies);
   } catch (error) {
     next(error);
   }
@@ -70,13 +99,8 @@ exports.deleteReview = async (req, res, next) => {
       throw ApiError.Forbidden("No rights on this review");
     }
     await ReviewService.deleteReview(reviewID);
-    res.status(201).json(updatedReview);
+    res.sendStatus(201);
   } catch (error) {
     next(error);
   }
 };
-
-// exports.getUsersReviews = async (req, res, next) => {
-//   const { userID } = req.userID;
-//   const
-// }

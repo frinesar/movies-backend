@@ -4,6 +4,7 @@ const app = require("./app");
 const uuid = require("uuid");
 
 let id = "";
+let reviewID = "";
 const username = uuid.v4();
 const password = uuid.v4();
 let accessToken = "";
@@ -16,7 +17,7 @@ describe("Test the root path", () => {
   });
 });
 
-describe("User + auth + wishlist", () => {
+describe("User + auth + wishlist + watchedlist + reviews", () => {
   beforeAll(() => {
     DB.connectDB();
   });
@@ -99,6 +100,44 @@ describe("User + auth + wishlist", () => {
   test("Delete from watched list", async () => {
     const response = await request(app)
       .delete(`/api/watchedMoviesList/550`)
+      .set("Authorization", `Bearer ${accessToken}`);
+
+    expect(response.statusCode).toBe(201);
+  });
+
+  test("Create new review", async () => {
+    const response = await request(app)
+      .post(`/api/reviews`)
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({
+        movieID: 550,
+        text: "review for Fight Club",
+        personalRating: 9,
+      });
+
+    expect(response.statusCode).toBe(201);
+    expect(response.body).toHaveProperty("text", "review for Fight Club");
+    reviewID = response.body.id;
+  });
+
+  test("Update new review", async () => {
+    const response = await request(app)
+      .put(`/api/reviews/${reviewID}`)
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({
+        text: "updated review for Fight Club",
+      });
+
+    expect(response.statusCode).toBe(201);
+    expect(response.body).toHaveProperty(
+      "text",
+      "updated review for Fight Club"
+    );
+  });
+
+  test("Delete new review", async () => {
+    const response = await request(app)
+      .delete(`/api/reviews/${reviewID}`)
       .set("Authorization", `Bearer ${accessToken}`);
 
     expect(response.statusCode).toBe(201);

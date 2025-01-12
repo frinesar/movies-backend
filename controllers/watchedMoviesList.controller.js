@@ -8,7 +8,6 @@ exports.getWatchedMoviesList = async (req, res, next) => {
     const watchedMoviesList = await WatchedMoviesList.getWatchedMoviesList(
       userID
     );
-
     const watchedMoviesListMovies = await Promise.all(
       watchedMoviesList.map(async (movie) => {
         const info = await TMDBservice.getMovie(movie.movieID);
@@ -18,7 +17,6 @@ exports.getWatchedMoviesList = async (req, res, next) => {
         });
       })
     );
-
     res.status(200).json(watchedMoviesListMovies);
   } catch (error) {
     next(error);
