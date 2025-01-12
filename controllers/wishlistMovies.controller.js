@@ -1,5 +1,6 @@
 const WishlistMovies = require("../services/wishlistMovies.service");
 const TMDBservice = require("../services/TMDB.service");
+const WishlistMovieDto = require("../dto/wishlistMovie.dto");
 
 exports.getWishlist = async (req, res, next) => {
   const userID = req.userID;
@@ -8,14 +9,11 @@ exports.getWishlist = async (req, res, next) => {
     const wishlistMovies = await Promise.all(
       wishlist.map(async (movie) => {
         const info = await TMDBservice.getMovie(movie.movieID);
-        return {
-          movieID: movie.movieID,
-          title: info.title,
-          releaseDate: info.release_date,
-          runtime: info.runtime,
+        return new WishlistMovieDto({
+          ...info,
           addedAt: movie.addedAt,
           isWatched: movie.isWatched,
-        };
+        });
       })
     );
     res.status(200).json(wishlistMovies);
@@ -32,7 +30,11 @@ exports.addToWishlist = async (req, res, next) => {
       userID,
       movieID
     );
-    res.status(201).json({ movieID, addedAt: addingToWishlist.addedAt });
+    res.status(201).json({
+      movieID,
+      isWatched: addingToWishlist.isWatched,
+      addedAt: addingToWishlist.addedAt,
+    });
   } catch (error) {
     next(error);
   }
@@ -57,6 +59,7 @@ exports.changeStatus = async (req, res, next) => {
     res.status(201).json({
       movieID,
       isWatched: response.isWatched,
+      addedAt: response.addedAt,
     });
   } catch (error) {
     next(error);

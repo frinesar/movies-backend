@@ -10,7 +10,7 @@ exports.createUser = async (req, res, next) => {
   try {
     const newUser = await UserService.createUser(username, password);
     const userDto = new UserDto(newUser);
-    res.status(201).json({ ...userDto });
+    res.status(201).json(userDto);
   } catch (error) {
     next(error);
   }

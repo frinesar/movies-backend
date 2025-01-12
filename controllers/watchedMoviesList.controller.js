@@ -1,5 +1,6 @@
 const WatchedMoviesList = require("../services/watchedMoviesList.service");
 const TMDBservice = require("../services/TMDB.service");
+const WatchedMovieDto = require("../dto/watchedMovie.dto");
 
 exports.getWatchedMoviesList = async (req, res, next) => {
   const userID = req.userID;
@@ -11,13 +12,10 @@ exports.getWatchedMoviesList = async (req, res, next) => {
     const watchedMoviesListMovies = await Promise.all(
       watchedMoviesList.map(async (movie) => {
         const info = await TMDBservice.getMovie(movie.movieID);
-        return {
-          title: info.title,
-          releaseDate: info.release_date,
-          runtime: info.runtime,
-          movieID: movie.movieID,
+        return new WatchedMovieDto({
+          ...info,
           watchedAt: movie.watchedAt,
-        };
+        });
       })
     );
 
