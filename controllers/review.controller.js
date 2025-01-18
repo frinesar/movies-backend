@@ -3,32 +3,16 @@ const ReviewService = require("../services/review.service");
 const TMDBservice = require("../services/TMDB.service");
 const ReviewDto = require("../dto/review.dto");
 const UserDto = require("../dto/user.dto");
-
-exports.getAllReviews = async (req, res, next) => {
-  try {
-    const reviews = await ReviewService.getAllReviews();
-    const reviewsMovies = await Promise.all(
-      reviews.map(async (review) => {
-        const info = await TMDBservice.getMovie(review.movieID);
-        return new ReviewDto({ movieTitle: info.title, ...review.toObject() });
-      })
-    );
-    res.status(200).json(reviewsMovies);
-  } catch (error) {
-    next(error);
-  }
-};
+const CachedMovieService = require("../services/cachedMovie.service");
 
 exports.getUsersReviews = async (req, res, next) => {
-  const { userID } = req.userID;
+  const userID = req.userID;
+
   try {
     const reviews = await ReviewService.getUsersReviews(userID);
-    const reviewsMovies = await Promise.all(
-      reviews.map(async (review) => {
-        const info = await TMDBservice.getMovie(review.movieID);
-        return new ReviewDto({ movieTitle: info.title, ...review.toObject() });
-      })
-    );
+    const reviewsMovies = reviews.map((review) => {
+      return new ReviewDto(review);
+    });
     res.status(200).json(reviewsMovies);
   } catch (error) {
     next(error);
@@ -39,10 +23,12 @@ exports.createReview = async (req, res, next) => {
   const userID = req.userID;
   const { text, personalRating, movieID } = req.body;
   try {
+    const movieTitle = (await CachedMovieService.getMovie(movieID)).title;
     const newReview = await ReviewService.createReview(userID, {
       text,
       personalRating,
       movieID,
+      movieTitle,
     });
     res
       .status(201)
@@ -54,14 +40,12 @@ exports.createReview = async (req, res, next) => {
 
 exports.getReviewsForMovie = async (req, res, next) => {
   const { movieID } = req.params;
+  const userID = req.userID;
   try {
-    const reviews = await ReviewService.getReviewsForMovie(movieID);
-    const reviewsMovies = await Promise.all(
-      reviews.map(async (review) => {
-        const info = await TMDBservice.getMovie(review.movieID);
-        return new ReviewDto({ movieTitle: info.title, ...review.toObject() });
-      })
-    );
+    const reviews = await ReviewService.getReviewsForMovie(movieID, userID);
+    const reviewsMovies = reviews.map((review) => {
+      return new ReviewDto(review);
+    });
     res.status(200).json(reviewsMovies);
   } catch (error) {
     next(error);

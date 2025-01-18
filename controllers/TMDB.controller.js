@@ -1,5 +1,7 @@
 const ApiError = require("../exceptions/api.error");
 const TMDBService = require("../services/TMDB.service");
+const CachedMovieService = require("../services/cachedMovie.service");
+const MovieDto = require("../dto/movie.dto");
 
 exports.findMovie = async (req, res, next) => {
   const { query } = req.params;
@@ -10,7 +12,7 @@ exports.findMovie = async (req, res, next) => {
         return {
           movieID: movie.id,
           title: movie.title,
-          posterPath: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+          posterPath: `https://image.tmdb.org/t/p/w300${movie.poster_path}`,
           originalLanguage: movie.original_language,
           releaseDate: movie.release_date,
         };
@@ -24,61 +26,29 @@ exports.findMovie = async (req, res, next) => {
 exports.getMovieByID = async (req, res, next) => {
   const { movieID } = req.params;
   try {
-    const response = await TMDBService.getMovie(movieID);
-    res.status(200).json({
-      id: response.id,
-      title: response.title,
-      tagline: response.tagline,
-      imagePath: `https://image.tmdb.org/t/p/original${response.backdrop_path}`,
-      posterPath: `https://image.tmdb.org/t/p/w500${response.poster_path}`,
-      overview: response.overview,
-      releaseDate: response.release_date,
-      budget: response.budget,
-      revenue: response.revenue,
-      runtime: response.runtime,
-      voteAverage: response.vote_average,
-      voteCount: response.vote_count,
-      genres: response.genres,
-    });
+    const movieInCache = await CachedMovieService.getMovie(movieID);
+    res.status(200).json(new MovieDto(movieInCache));
   } catch (error) {
     next(ApiError.BadRequest(error));
   }
 };
 
-exports.getCredits = async (req, res, next) => {
+exports.getCrew = async (req, res, next) => {
   const { movieID } = req.params;
 
   try {
-    const response = await TMDBService.getCredits(movieID);
-    const director = response.crew.filter(
-      (member) => member.job === "Director"
-    );
-    const novelist = response.crew.filter((member) => member.job === "Novel");
-    const screenplay = response.crew.filter(
-      (member) => member.job === "Screenplay"
-    );
-    console.log(director, novelist, screenplay);
-
-    res.status(200).json({
-      director: director.map((member) => {
+    const response = (await CachedMovieService.getMovie(movieID)).crew;
+    const result = {};
+    for (const role in response.toObject()) {
+      result[role] = response[role].map((member) => {
         return {
+          id: member.id,
           name: member.name,
-          profilePath: `https://image.tmdb.org/t/p/w500${member.profile_path}`,
+          profilePath: `https://image.tmdb.org/t/p/w300${member.profile_path}`,
         };
-      }),
-      novelist: novelist.map((member) => {
-        return {
-          name: member.name,
-          profilePath: `https://image.tmdb.org/t/p/w500${member.profile_path}`,
-        };
-      }),
-      screenplay: screenplay.map((member) => {
-        return {
-          name: member.name,
-          profilePath: `https://image.tmdb.org/t/p/w500${member.profile_path}`,
-        };
-      }),
-    });
+      });
+    }
+    res.status(200).json(result);
   } catch (error) {
     next(ApiError.BadRequest(error));
   }
@@ -94,7 +64,7 @@ exports.getCast = async (req, res, next) => {
         return {
           id: member.id,
           name: member.name,
-          profilePath: member.profile_path,
+          profilePath: `https://image.tmdb.org/t/p/w300/${member.profile_path}`,
           character: member.character,
         };
       })

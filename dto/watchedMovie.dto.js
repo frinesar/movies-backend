@@ -1,15 +1,11 @@
 module.exports = class WatchedMovieDto {
   movieID;
-  title;
-  releaseDate;
-  runtime;
+  movieTitle;
   watchedAt;
 
   constructor(movie) {
-    this.movieID = movie.id;
-    this.title = movie.title;
-    this.releaseDate = movie.release_date;
-    this.runtime = movie.runtime;
+    this.movieID = movie.movieID;
+    this.movieTitle = movie.movieTitle;
     this.watchedAt = movie.watchedAt;
   }
 };

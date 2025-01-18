@@ -1,15 +1,12 @@
 const Review = require("../models/review.model");
-
-exports.getAllReviews = async () => {
-  return await Review.find({});
-};
+const ApiError = require("../exceptions/api.error");
 
 exports.getUsersReviews = async (userID) => {
   return await Review.find({ user: userID });
 };
 
-exports.getReviewsForMovie = async (movieID) => {
-  return await Review.find({ movieID });
+exports.getReviewsForMovie = async (movieID, userID) => {
+  return await Review.find({ movieID, user: userID });
 };
 
 exports.getReviewByID = async (reviewID) => {

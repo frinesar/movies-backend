@@ -1,5 +1,5 @@
 module.exports = class ReviewDto {
-  id;
+  reviewID;
   movieID;
   movieTitle;
   text;
@@ -8,8 +8,8 @@ module.exports = class ReviewDto {
   createdAt;
 
   constructor(review) {
-    this.id = review._id;
-    this.movieID = review.id;
+    this.reviewID = review._id;
+    this.movieID = review.movieID;
     this.movieTitle = review.movieTitle;
     this.text = review.text;
     this.personalRating = review.personalRating;

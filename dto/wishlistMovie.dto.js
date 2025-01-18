@@ -1,16 +1,12 @@
 module.exports = class WishlistMovieDto {
   movieID;
-  title;
-  releaseDate;
-  runtime;
+  movieTitle;
   addedAt;
   isWatched;
 
   constructor(movie) {
-    this.movieID = movie.id;
-    this.title = movie.title;
-    this.releaseDate = movie.release_date;
-    this.runtime = movie.runtime;
+    this.movieID = movie.movieID;
+    this.movieTitle = movie.movieTitle;
     this.addedAt = movie.addedAt;
     this.isWatched = movie.isWatched;
   }

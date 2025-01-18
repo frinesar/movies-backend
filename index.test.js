@@ -117,7 +117,7 @@ describe("User + auth + wishlist + watchedlist + reviews", () => {
 
     expect(response.statusCode).toBe(201);
     expect(response.body).toHaveProperty("text", "review for Fight Club");
-    reviewID = response.body.id;
+    reviewID = response.body.reviewID;
   });
 
   test("Update new review", async () => {
