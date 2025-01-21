@@ -21,3 +21,9 @@ exports.getCredits = async (movieID) => {
     await fetch(`${TMDB_URL}/movie/${movieID}/credits?api_key=${TMDB_API}`)
   ).json();
 };
+
+exports.getTrendingMovies = async (timeWindow = "week") => {
+  return (
+    await fetch(`${TMDB_URL}/trending/movie/${timeWindow}?api_key=${TMDB_API}`)
+  ).json();
+};

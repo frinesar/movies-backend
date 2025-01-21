@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const WishlistController = require("../controllers/wishlistMovies.controller");
+const WishlistController = require("../controllers/wishlist.controller");
 const tokenValidator = require("../middleware/token-validator");
 
 const router = new Router();

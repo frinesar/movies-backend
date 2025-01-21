@@ -1,15 +1,11 @@
 const { Schema, model } = require("mongoose");
 
-const WishlistMoviesSchema = new Schema({
+const WishlistSchema = new Schema({
   movieID: { type: Number, required: true },
-  movieTitle: { type: String, required: true },
+  title: { type: String, required: true },
   isWatched: { type: Boolean, default: false },
   addedAt: { type: Date, default: Date.now },
   user: { type: Schema.ObjectId, required: true, ref: "User" },
 });
 
-module.exports = model(
-  "WishlistMovies",
-  WishlistMoviesSchema,
-  "WishlistMovies"
-);
+module.exports = model("Wishlist", WishlistSchema, "Wishlist");

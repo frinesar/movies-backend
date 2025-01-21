@@ -72,9 +72,6 @@ exports.refresh = async (refreshToken) => {
   const tokenData = TokenService.validateRefreshToken(refreshToken);
   const tokenInDB = await TokenService.findRefreshToken(refreshToken);
   if (!tokenData || !tokenInDB) {
-    console.log(tokenData);
-    console.log(tokenInDB);
-
     throw ApiError.Unauthorized("Invalid refresh token");
   }
   const user = await User.findOne({ _id: tokenData.id });

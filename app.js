@@ -3,8 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const userRouter = require("./routers/user.router");
-const wishlistMoviesRouter = require("./routers/wishlistMovies.router");
-const watchedMoviesListRouter = require("./routers/watchedMoviesList.router");
+const wishlistMoviesRouter = require("./routers/wishlist.router");
 const reviewRouter = require("./routers/review.router");
 const TMDBrouter = require("./routers/TMDB.router");
 const errorHandler = require("./middleware/error-handler");
@@ -26,7 +25,6 @@ app.use(cookieParser());
 app.use("/api/users", userRouter);
 app.use("/api/reviews", tokenValidator, reviewRouter);
 app.use("/api/wishlist", tokenValidator, wishlistMoviesRouter);
-app.use("/api/watchedMoviesList", tokenValidator, watchedMoviesListRouter);
 app.use("/api/movies", TMDBrouter);
 
 app.use("/test", (req, res) => {

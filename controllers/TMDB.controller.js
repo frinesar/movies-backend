@@ -7,17 +7,7 @@ exports.findMovie = async (req, res, next) => {
   const { query } = req.params;
   try {
     const response = await TMDBService.findMovie(query);
-    res.status(200).json(
-      response.results.map((movie) => {
-        return {
-          movieID: movie.id,
-          title: movie.title,
-          posterPath: `https://image.tmdb.org/t/p/w300${movie.poster_path}`,
-          originalLanguage: movie.original_language,
-          releaseDate: movie.release_date,
-        };
-      })
-    );
+    res.status(200).json(response);
   } catch (error) {
     next(ApiError.BadRequest(error));
   }
@@ -26,8 +16,8 @@ exports.findMovie = async (req, res, next) => {
 exports.getMovieByID = async (req, res, next) => {
   const { movieID } = req.params;
   try {
-    const movieInCache = await CachedMovieService.getMovie(movieID);
-    res.status(200).json(new MovieDto(movieInCache));
+    const response = await CachedMovieService.getMovie(movieID);
+    res.status(200).json(response);
   } catch (error) {
     next(ApiError.BadRequest(error));
   }
@@ -69,6 +59,16 @@ exports.getCast = async (req, res, next) => {
         };
       })
     );
+  } catch (error) {
+    next(ApiError.BadRequest(error));
+  }
+};
+
+exports.getTrendingMovies = async (req, res, next) => {
+  const { query: timeWindow } = req.params;
+  try {
+    const response = await TMDBService.getTrendingMovies(timeWindow);
+    res.status(200).json(response);
   } catch (error) {
     next(ApiError.BadRequest(error));
   }

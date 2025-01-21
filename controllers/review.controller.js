@@ -23,12 +23,12 @@ exports.createReview = async (req, res, next) => {
   const userID = req.userID;
   const { text, personalRating, movieID } = req.body;
   try {
-    const movieTitle = (await CachedMovieService.getMovie(movieID)).title;
+    const title = (await CachedMovieService.getMovie(movieID)).title;
     const newReview = await ReviewService.createReview(userID, {
       text,
       personalRating,
       movieID,
-      movieTitle,
+      title,
     });
     res
       .status(201)

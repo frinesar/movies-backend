@@ -80,31 +80,6 @@ describe("User + auth + wishlist + watchedlist + reviews", () => {
     expect(response.statusCode).toBe(201);
   });
 
-  test("Get user's watched list", async () => {
-    const response = await request(app)
-      .get(`/api/watchedMoviesList`)
-      .set("Authorization", `Bearer ${accessToken}`);
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toStrictEqual([]);
-  });
-
-  test("Add to watched list", async () => {
-    const response = await request(app)
-      .post(`/api/watchedMoviesList/550`)
-      .set("Authorization", `Bearer ${accessToken}`);
-
-    expect(response.statusCode).toBe(201);
-    expect(response.body).toHaveProperty("movieID");
-  });
-
-  test("Delete from watched list", async () => {
-    const response = await request(app)
-      .delete(`/api/watchedMoviesList/550`)
-      .set("Authorization", `Bearer ${accessToken}`);
-
-    expect(response.statusCode).toBe(201);
-  });
-
   test("Create new review", async () => {
     const response = await request(app)
       .post(`/api/reviews`)

@@ -18,30 +18,11 @@ exports.getMovie = async (movieID) => {
 
 const addMovie = async (movieID) => {
   const movieDetails = await TMDBService.getMovie(movieID);
-  const movieCredits = await TMDBService.getCredits(movieID);
-
-  const cast = movieCredits.cast.filter((member) => member.order < 10);
-  const director = movieCredits?.crew.filter(
-    (member) => member.job === "Director"
-  );
-  const novel = movieCredits.crew.filter((member) => member.job === "Novel");
-  const screenplay = movieCredits?.crew.filter(
-    (member) => member.job === "Screenplay"
-  );
 
   return await CachedMovie.findOneAndUpdate(
     { id: movieID },
     {
       ...movieDetails,
-      crew: { director, novel, screenplay },
-      cast: cast.map((member) => {
-        return {
-          id: member.id,
-          profile_path: member.profile_path,
-          name: member.name,
-          character: member.character,
-        };
-      }),
       updatedAt: Date.now(),
     },
     { new: true, upsert: true }

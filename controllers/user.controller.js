@@ -1,7 +1,6 @@
 const UserService = require("../services/user.service");
 const TokenService = require("../services/token.service");
-const WishlistService = require("../services/wishlistMovies.service");
-const WatchedMoviesListService = require("../services/watchedMoviesList.service");
+const WishlistService = require("../services/wishlist.service");
 const UserDto = require("../dto/user.dto");
 const ApiError = require("../exceptions/api.error");
 
@@ -24,7 +23,6 @@ exports.deleteUser = async (req, res, next) => {
     }
     const user = await UserService.deleteUser(req.userID);
     await WishlistService.deleteWishlist(req.userID);
-    await WatchedMoviesListService.deleteWatchedList(req.userID);
     await TokenService.deleteManyRefreshTokens(req.userID);
     res.sendStatus(200);
   } catch (error) {
@@ -49,7 +47,7 @@ exports.loginUser = async (req, res, next) => {
   }
 };
 
-exports.logout = async (res, req) => {
+exports.logout = async (req, res) => {
   const { refreshToken } = req.cookies;
   await TokenService.deleteRefreshToken(refreshToken);
   res.clearCookie("refreshToken");
