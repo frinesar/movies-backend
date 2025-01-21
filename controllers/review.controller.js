@@ -1,13 +1,10 @@
 const ApiError = require("../exceptions/api.error");
 const ReviewService = require("../services/review.service");
-const TMDBservice = require("../services/TMDB.service");
 const ReviewDto = require("../dto/review.dto");
-const UserDto = require("../dto/user.dto");
 const CachedMovieService = require("../services/cachedMovie.service");
 
 exports.getUsersReviews = async (req, res, next) => {
   const userID = req.userID;
-
   try {
     const reviews = await ReviewService.getUsersReviews(userID);
     const reviewsMovies = reviews.map((review) => {

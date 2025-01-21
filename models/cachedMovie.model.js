@@ -57,6 +57,7 @@ const CachedMovieSchema = new Schema({
   video: { type: Boolean, required: true },
   vote_average: { type: Number, required: true },
   vote_count: { type: Number, required: true },
+  updatedAt: { type: Date, default: Date.now },
 });
 
 module.exports = model("CachedMovie", CachedMovieSchema, "CachedMovies");

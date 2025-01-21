@@ -10,7 +10,7 @@ module.exports = class ReviewDto {
   constructor(review) {
     this.reviewID = review._id;
     this.movieID = review.movieID;
-    this.movieTitle = review.movieTitle;
+    this.title = review.title;
     this.text = review.text;
     this.personalRating = review.personalRating;
     this.updatedAt = review.updatedAt;

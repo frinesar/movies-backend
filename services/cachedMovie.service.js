@@ -3,7 +3,7 @@ const TMDBService = require("./TMDB.service");
 const dayjs = require("dayjs");
 
 exports.getMovie = async (movieID) => {
-  const cachedMovie = await CachedMovie.findOne({ id: movieID });
+  const cachedMovie = await CachedMovie.findOne({ id: movieID }).lean();
   if (!cachedMovie) {
     return await addMovie(movieID);
   }
@@ -25,6 +25,6 @@ const addMovie = async (movieID) => {
       ...movieDetails,
       updatedAt: Date.now(),
     },
-    { new: true, upsert: true }
+    { new: true, upsert: true, lean: true }
   );
 };

@@ -17,7 +17,7 @@ exports.addToWishlist = async (userID, movieID) => {
     throw ApiError.BadRequest("Movie is already in wishlist");
   }
   const title = (await CashedMovieService.getMovie(movieID)).title;
-  return await Wishlist.create({ user: userID, movieID, title });
+  return await Wishlist.create({ user: userID, movieID, title }, { lea });
 };
 
 exports.deleteFromWishlist = async (userID, movieID) => {

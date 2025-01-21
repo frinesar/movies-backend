@@ -1,14 +1,12 @@
 const WishlistService = require("../services/wishlist.service");
-const TMDBservice = require("../services/TMDB.service");
-const WishlistMovieDto = require("../dto/wishlist.dto");
-const CachedMovieService = require("../services/cachedMovie.service");
+const WishlistDto = require("../dto/wishlist.dto");
 
 exports.getWishlist = async (req, res, next) => {
   const userID = req.userID;
   try {
     const wishlist = await WishlistService.getWishlist(userID);
 
-    res.status(200).json(wishlist.map((movie) => new WishlistMovieDto(movie)));
+    res.status(200).json(wishlist.map((movie) => new WishlistDto(movie)));
   } catch (error) {
     next(error);
   }
@@ -22,7 +20,7 @@ exports.addToWishlist = async (req, res, next) => {
       userID,
       movieID
     );
-    res.status(201).json(new WishlistMovieDto(addingToWishlist));
+    res.status(201).json(new WishlistDto(addingToWishlist));
   } catch (error) {
     next(error);
   }

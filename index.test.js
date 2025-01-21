@@ -17,7 +17,7 @@ describe("Test the root path", () => {
   });
 });
 
-describe("User + auth + wishlist + watchedlist + reviews", () => {
+describe("User + auth + wishlist + reviews", () => {
   beforeAll(() => {
     DB.connectDB();
   });
