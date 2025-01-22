@@ -8,22 +8,15 @@ exports.getMovie = async (movieID) => {
   ).json();
 };
 
-exports.findMovie = async (query) => {
-  return (
-    await fetch(
-      `${process.env.TMDB_URL}/search/movie?query=${query}&api_key=${process.env.TMDB_API}`
-    )
-  ).json();
-};
-
-exports.getCredits = async (movieID) => {
-  return (
-    await fetch(`${TMDB_URL}/movie/${movieID}/credits?api_key=${TMDB_API}`)
-  ).json();
-};
-
-exports.getTrendingMovies = async (timeWindow = "week") => {
-  return (
-    await fetch(`${TMDB_URL}/trending/movie/${timeWindow}?api_key=${TMDB_API}`)
-  ).json();
+exports.proxyTMDBRequest = async (path, queryParams = {}) => {
+  const url = new URL(`${TMDB_URL}/${path}`);
+  url.searchParams.append("api_key", TMDB_API);
+  for (const [key, value] of Object.entries(queryParams)) {
+    url.searchParams.append(key, value);
+  }
+  const response = await fetch(url.toString());
+  if (!response.ok) {
+    throw new Error(`Error: ${response.status} ${response.statusText}`);
+  }
+  return await response.json();
 };
