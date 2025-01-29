@@ -12,8 +12,8 @@ const tokenValidator = require("./middleware/token-validator");
 const app = express();
 app.use(
   cors({
-    origin: "*",
-    // credentials: true,
+    origin: process.env.CLIENT_URL,
+    credentials: true,
   })
 );
 

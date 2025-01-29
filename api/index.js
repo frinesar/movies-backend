@@ -26,7 +26,7 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 // app.use((req, res, next) => {
-//   setTimeout(next, 2000);
+//   setTimeout(next, 8000);
 // });
 app.use("/api/users", userRouter);
 app.use("/api/reviews", tokenValidator, reviewRouter);

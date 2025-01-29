@@ -4,7 +4,7 @@ const tokenValidator = require("../middleware/token-validator");
 
 const router = new Router();
 
-router.get("/:movieID", ReviewController.getReviewsForMovie);
+router.get("/:reviewID", ReviewController.getReviewByID);
 router.get("/", ReviewController.getUsersReviews);
 router.post("/", ReviewController.createReview);
 router.put("/:reviewID", ReviewController.updateReview);

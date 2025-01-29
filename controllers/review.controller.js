@@ -3,10 +3,28 @@ const ReviewService = require("../services/review.service");
 const ReviewDto = require("../dto/review.dto");
 const CachedMovieService = require("../services/cachedMovie.service");
 
+exports.getReviewByID = async (req, res, next) => {
+  const { reviewID } = req.params;
+  try {
+    const review = await ReviewService.getReviewByID(reviewID);
+    res.status(200).json(new ReviewDto(review));
+  } catch (error) {
+    next(error);
+  }
+};
+
 exports.getUsersReviews = async (req, res, next) => {
   const userID = req.userID;
   try {
-    const reviews = await ReviewService.getUsersReviews(userID);
+    let reviews;
+    if (req.query.movieID) {
+      reviews = await ReviewService.getReviewsForMovie(
+        req.query.movieID,
+        userID
+      );
+    } else {
+      reviews = await ReviewService.getUsersReviews(userID);
+    }
     const reviewsMovies = reviews.map((review) => {
       return new ReviewDto(review);
     });
@@ -20,30 +38,16 @@ exports.createReview = async (req, res, next) => {
   const userID = req.userID;
   const { text, personalRating, movieID } = req.body;
   try {
-    const title = (await CachedMovieService.getMovie(movieID)).title;
+    const movieTitle = (await CachedMovieService.getMovie(movieID)).title;
     const newReview = await ReviewService.createReview(userID, {
       text,
       personalRating,
       movieID,
-      title,
+      movieTitle,
     });
     res
       .status(201)
       .json({ ...new ReviewDto({ movieID, ...newReview.toObject() }) });
-  } catch (error) {
-    next(error);
-  }
-};
-
-exports.getReviewsForMovie = async (req, res, next) => {
-  const { movieID } = req.params;
-  const userID = req.userID;
-  try {
-    const reviews = await ReviewService.getReviewsForMovie(movieID, userID);
-    const reviewsMovies = reviews.map((review) => {
-      return new ReviewDto(review);
-    });
-    res.status(200).json(reviewsMovies);
   } catch (error) {
     next(error);
   }
