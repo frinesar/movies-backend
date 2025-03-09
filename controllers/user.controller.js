@@ -42,7 +42,6 @@ exports.loginUser = async (req, res, next) => {
       httpOnly: true,
       secure: true,
       sameSite: "None",
-      domain: ".vercel.app",
     });
     res.status(200).json({ accessToken });
   } catch (error) {
