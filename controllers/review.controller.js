@@ -69,7 +69,7 @@ exports.updateReview = async (req, res, next) => {
       personalRating,
       updatedAt: Date.now(),
     });
-    res.status(201).json(updatedReview);
+    res.status(201).json(new ReviewDto(updatedReview));
   } catch (error) {
     next(error);
   }
