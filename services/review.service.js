@@ -2,7 +2,7 @@ const Review = require("../models/review.model");
 const ApiError = require("../exceptions/api.error");
 
 exports.getUsersReviews = async (userID) => {
-  return await Review.find({ user: userID });
+  return await Review.find({ user: userID }).sort({ createdAt: -1 });
 };
 
 exports.getReviewsForMovie = async (movieID, userID) => {
